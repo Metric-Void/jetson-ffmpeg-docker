@@ -1,8 +1,7 @@
 FROM nvcr.io/nvidia/l4t-base:r32.6.1 AS build
-COPY ffmpeg /build/ffmpeg
-COPY jetson-ffmpeg /build/jetson-ffmpeg
-COPY jetson_multimedia_api /usr/src/jetson_multimedia_api
+COPY . /build
 RUN apt-get update && apt-get -y --autoremove install build-essential git libass-dev cmake
+RUN cp /build/jetson-ffmpeg/ffmpeg_nvmpi.patch /build/ffmpeg && cd /build/ffmpeg && git apply ffmpeg_nvmpi.patch && mv /build/jetson_multimedia_api /usr/src
 WORKDIR /build/jetson-ffmpeg
 RUN mkdir build && cd build && cmake .. && make -j4 && make install && ldconfig
 WORKDIR /build/ffmpeg
